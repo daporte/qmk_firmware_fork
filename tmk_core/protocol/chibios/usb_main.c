@@ -27,6 +27,7 @@
 #include "usb_descriptor.h"
 #include "usb_driver.h"
 #include "usb_types.h"
+#include "print.h"
 
 #ifdef RAW_ENABLE
 #    include "raw_hid.h"
@@ -540,7 +541,15 @@ void plover_hid_task(void) {
     if (!plover_hid_report_updated) {
         return;
     }
-    send_report(USB_ENDPOINT_IN_PLOVER_HID, plover_hid_current_report, sizeof(plover_hid_current_report));
+    dprintf("PLV task start\n");
+    // Debug: check if USB is ready before sending
+    if (usbGetDriverStateI(&USB_DRIVER) != USB_ACTIVE) {
+        dprintf("PLV USB not active\n");
+        return;
+    }
+    dprintf("PLV sending\n");
+    bool result = send_report(USB_ENDPOINT_IN_PLOVER_HID, plover_hid_current_report, sizeof(plover_hid_current_report));
+    dprintf("PLV sent: %d\n", result);
     plover_hid_report_updated = false;
 }
 #endif
