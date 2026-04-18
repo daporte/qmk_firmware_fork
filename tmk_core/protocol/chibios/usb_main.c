@@ -531,6 +531,9 @@ static bool    plover_hid_report_updated                    = false;
 static uint8_t plover_hid_current_report[PLOVER_HID_EPSIZE] = {0x50};
 
 void plover_hid_update(uint8_t button, bool pressed) {
+#ifdef CONSOLE_ENABLE
+    dprintf("PLV upd: %d %s\n", button, pressed ? "DN" : "UP");
+#endif
     if (pressed) {
         plover_hid_current_report[1 + button / 8] |= (1 << (7 - (button % 8)));
     } else {
