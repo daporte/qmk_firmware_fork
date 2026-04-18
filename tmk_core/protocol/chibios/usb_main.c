@@ -27,7 +27,9 @@
 #include "usb_descriptor.h"
 #include "usb_driver.h"
 #include "usb_types.h"
-#include "print.h"
+#ifdef CONSOLE_ENABLE
+#include "debug.h"
+#endif
 
 #ifdef RAW_ENABLE
 #    include "raw_hid.h"
@@ -541,15 +543,24 @@ void plover_hid_task(void) {
     if (!plover_hid_report_updated) {
         return;
     }
+#ifdef CONSOLE_ENABLE
     dprintf("PLV task start\n");
+#endif
     // Debug: check if USB is ready before sending
     if (usbGetDriverStateI(&USB_DRIVER) != USB_ACTIVE) {
+#ifdef CONSOLE_ENABLE
         dprintf("PLV USB not active\n");
+#endif
         return;
     }
+#ifdef CONSOLE_ENABLE
     dprintf("PLV sending\n");
+#endif
     bool result = send_report(USB_ENDPOINT_IN_PLOVER_HID, plover_hid_current_report, sizeof(plover_hid_current_report));
+    (void)result;
+#ifdef CONSOLE_ENABLE
     dprintf("PLV sent: %d\n", result);
+#endif
     plover_hid_report_updated = false;
 }
 #endif
