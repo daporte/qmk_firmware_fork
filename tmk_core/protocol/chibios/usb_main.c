@@ -565,6 +565,7 @@ void plover_hid_task(void) {
     dprintf("PLV sent: %d\n", result);
 #endif
     plover_hid_report_updated = false;
+    wait_ms(1);  // Small delay between reports
 }
 #endif
 
