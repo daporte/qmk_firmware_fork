@@ -536,10 +536,11 @@ void plover_hid_update(uint8_t button, bool pressed) {
 #endif
     if (pressed) {
         plover_hid_current_report[1 + button / 8] |= (1 << (7 - (button % 8)));
+        plover_hid_report_updated = true;  // Only send on press
     } else {
         plover_hid_current_report[1 + button / 8] &= ~(1 << (7 - (button % 8)));
+        // Don't set flag on release - test if this prevents crash
     }
-    plover_hid_report_updated = true;
 }
 
 void plover_hid_task(void) {
